@@ -1,0 +1,4 @@
+name: Ticket
+main: org.s4x8.bukkit.ticket.TicketPlugin
+version: 1.0
+depend: [RedstoneChips]
