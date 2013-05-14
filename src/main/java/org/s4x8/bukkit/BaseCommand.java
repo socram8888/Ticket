@@ -96,21 +96,28 @@ public abstract class BaseCommand extends Command implements PluginIdentifiableC
 		sender.sendMessage(ChatColor.GREEN + message);
 	};
 	
-	public void register() throws CommandRegistrationException {
+	public void register() {
+		boolean failed = false;
 		Server server = plugin.getServer();
 
-		CommandMap commandMap;
+		CommandMap commandMap = null;
 		try {
 			Method commandMapGetter = server.getClass().getDeclaredMethod("getCommandMap", new Class[0]);
 			commandMap = (CommandMap) commandMapGetter.invoke(server);
 		} catch (Exception e) {
-			throw new CommandRegistrationException();
+			failed = true;
 		};
 		
-		String fallbackPrefix = plugin.getDescription().getName().replace(" ", "").toLowerCase();
-		if (!register(commandMap) || !commandMap.register(fallbackPrefix, this)) throw new CommandRegistrationException();
+		if (!failed) {
+			String fallbackPrefix = plugin.getDescription().getName().replace(" ", "").toLowerCase();
+			failed = (register(commandMap) && commandMap.register(fallbackPrefix, this));
+		};
 		
-		server.getPluginManager().addPermission(permission);
+		if (!failed) {
+			server.getPluginManager().addPermission(permission);
+		} else {
+			getPlugin().getLogger().severe("Unable to register command " + getName());
+		};
 	};
 
 	public abstract void realExecute(CommandSender sender, String[] args);

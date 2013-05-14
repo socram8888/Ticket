@@ -7,7 +7,6 @@ import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.Material;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import org.s4x8.bukkit.CommandRegistrationException;
 import org.s4x8.bukkit.ticket.chip.TicketChipIndex;
 
 import org.tal.redstonechips.RedstoneChips;
@@ -24,11 +23,7 @@ public class TicketPlugin extends JavaPlugin {
 	};
 
 	private void registerCommands() {
-		try {
-			(new TicketMarkCommand(this)).register();
-		} catch (CommandRegistrationException ex) {
-			getLogger().severe("Unable to register commands");
-		};
+		(new TicketMarkCommand(this)).register();
 	};
 	
 	private void registerEvents() {
