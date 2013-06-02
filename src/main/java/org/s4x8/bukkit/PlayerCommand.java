@@ -7,16 +7,6 @@ import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 
 public abstract class PlayerCommand extends BaseCommand {
-	protected PlayerCommand(String name, String description, String usage, String permission, Plugin plugin) {
-		super(
-			name,
-			description,
-			usage,
-			permission,
-			plugin
-		);
-	};
-	
 	protected PlayerCommand(String name, String description, String usage, Permission permission, Plugin plugin) {
 		super(
 			name,

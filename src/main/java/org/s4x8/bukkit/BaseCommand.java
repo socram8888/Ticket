@@ -17,20 +17,9 @@ import java.util.ArrayList;
 import java.lang.reflect.Method;
 
 public abstract class BaseCommand extends Command implements PluginIdentifiableCommand {
-	Plugin plugin;
-	Permission permission;
+	protected Plugin plugin;
+	protected Permission permission;
 
-	protected BaseCommand(String name, String description, String usage, String permission, Plugin plugin) {
-		super(
-			name,
-			description,
-			usage,
-			new ArrayList()
-		);
-		setPermission(permission);
-		this.plugin = plugin;
-	};
-	
 	protected BaseCommand(String name, String description, String usage, Permission permission, Plugin plugin) {
 		super(
 			name,
@@ -38,9 +27,9 @@ public abstract class BaseCommand extends Command implements PluginIdentifiableC
 			usage,
 			new ArrayList()
 		);
-		setPermission(permission.getName());
-		this.permission = permission;
 		this.plugin = plugin;
+		this.permission = permission;
+		setPermission(permission.getName());
 	};
 
 	private String[] parseArguments(String raw) {
@@ -97,7 +86,7 @@ public abstract class BaseCommand extends Command implements PluginIdentifiableC
 	};
 	
 	public void register() {
-		boolean failed = false;
+		boolean success = true;
 		Server server = plugin.getServer();
 
 		CommandMap commandMap = null;
@@ -105,19 +94,24 @@ public abstract class BaseCommand extends Command implements PluginIdentifiableC
 			Method commandMapGetter = server.getClass().getDeclaredMethod("getCommandMap", new Class[0]);
 			commandMap = (CommandMap) commandMapGetter.invoke(server);
 		} catch (Exception e) {
-			failed = true;
+			System.out.println("Exception!");
+			success = false;
 		};
 		
-		if (!failed) {
+		if (success) {
 			String fallbackPrefix = plugin.getDescription().getName().replace(" ", "").toLowerCase();
-			failed = (register(commandMap) && commandMap.register(fallbackPrefix, this));
+			success = commandMap.register(fallbackPrefix, this);
 		};
 		
-		if (!failed) {
+		if (success) {
 			server.getPluginManager().addPermission(permission);
 		} else {
 			getPlugin().getLogger().severe("Unable to register command " + getName());
 		};
+	};
+	
+	public void unregister() {
+		plugin.getServer().getPluginManager().removePermission(permission);
 	};
 
 	public abstract void realExecute(CommandSender sender, String[] args);

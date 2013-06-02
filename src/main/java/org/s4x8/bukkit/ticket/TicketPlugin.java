@@ -23,7 +23,7 @@ public class TicketPlugin extends JavaPlugin {
 	};
 
 	private void registerCommands() {
-		(new TicketMarkCommand(this)).register();
+		new TicketMarkCommand(this);
 	};
 	
 	private void registerEvents() {
@@ -36,11 +36,11 @@ public class TicketPlugin extends JavaPlugin {
 	
 	public void onLoad() {
 		registerChip();
+		registerCommands();
 	};
 	
 	public void onEnable() {
 		registerEvents();
 		registerCrafting();
-		registerCommands();
 	};
 };
